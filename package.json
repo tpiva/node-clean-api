@@ -14,7 +14,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "git-commit-msg-linter": "^2.4.4"
+    "@types/validator": "^13.1.0",
+    "git-commit-msg-linter": "^2.4.4",
+    "validator": "^13.1.17"
   },
   "devDependencies": {
     "@types/jest": "^26.0.13",
