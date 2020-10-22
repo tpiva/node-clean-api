@@ -7,12 +7,7 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  class EncryptStub {
-    async encrypt (value: string): Promise<string> {
-      return new Promise(resolve => resolve('hashed_password'))
-    }
-  }
-  const encrypterStub = new EncryptStub()
+  const encrypterStub = makeEncrypter()
   const sut = new DbAddAccount(encrypterStub)
   return {
     sut,
@@ -20,7 +15,14 @@ const makeSut = (): SutTypes => {
   }
 }
 
-
+const makeEncrypter = (): Encrypter => {
+  class EncryptStub implements Encrypter {
+    async encrypt (value: string): Promise<string> {
+      return new Promise(resolve => resolve('hashed_password'))
+    }
+  }
+  return new EncryptStub()
+}
 
 describe('DbAddAccount Usecase', () => {
   test('Should call encrypter with correct password', async () => {
