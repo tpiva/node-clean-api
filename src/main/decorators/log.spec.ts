@@ -51,4 +51,10 @@ describe('Log Controller Decorator', () => {
     await sut.handler(makeFakeRequest())
     expect(handleSpy).toHaveBeenCalledWith(makeFakeRequest())
   })
+
+  it('should return the same return of controller', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handler(makeFakeRequest())
+    expect(httpResponse).toEqual(ok(makeFakeAccount()))
+  })
 })
