@@ -1,5 +1,6 @@
 {
     "extends": "standard-with-typescript",
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
       "project": "./tsconfig.json"
     },
@@ -9,6 +10,7 @@
       "@typescript-eslint/comma-spacing": "off",
       "@typescript-eslint/return-await": "off",
       "@typescript-eslint/no-redeclare": "off",
-      "@typescript-eslint/restrict-template-expressions": "off"
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "@typescript-eslint/prefer-nullish-coalescing": "off"
     }
 }
