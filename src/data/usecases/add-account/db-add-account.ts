@@ -2,10 +2,7 @@ import { AddAccountRepository } from '@/data/protocols/db/account/add-account-re
 import { AddAccount, AddAccountModel, AccountModel, Hasher } from './db-add-account-protocols'
 
 export class DbAddAccount implements AddAccount {
-  private readonly hasher: Hasher
-  private readonly addAccountRepositoryStub: AddAccountRepository
-
-  constructor (hasher: Hasher, addAccountRepositoryStub: AddAccountRepository) {
+  constructor (private readonly hasher: Hasher, private readonly addAccountRepositoryStub: AddAccountRepository) {
     this.hasher = hasher
     this.addAccountRepositoryStub = addAccountRepositoryStub
   }
