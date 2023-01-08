@@ -1,7 +1,7 @@
-import { LoadAccountByEmailRepository } from '@/data/protocols/db/account/load-account-by-email-repository'
-import { UpdateAccessTokenRepository } from '@/data/protocols/db/account/update-access-token-repository'
-import { AccountModel } from '@/domain/models/account'
-import { AddAccountModel } from '@/domain/usecases/addAccount'
+import { LoadAccountByEmailRepository } from '../../../../data/protocols/db/account/load-account-by-email-repository'
+import { UpdateAccessTokenRepository } from '../../../../data/protocols/db/account/update-access-token-repository'
+import { AccountModel } from '../../../../domain/models/account'
+import { AddAccountModel } from '../../../../domain/usecases/addAccount'
 import { AddAccountRepository } from '../../../../data/protocols/db/account/add-account-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
 
