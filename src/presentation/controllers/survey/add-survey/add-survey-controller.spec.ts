@@ -55,7 +55,7 @@ describe('Add Surver Controller', () => {
     MockDate.set(new Date())
   })
 
-  beforeAll(() => {
+  afterAll(() => {
     MockDate.reset()
   })
 
