@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/promise-function-async */
-import jwt from 'jsonwebtoken'
 import { JwtAdapter } from './jwt-adapter'
+import jwt from 'jsonwebtoken'
 
 jest.mock('jsonwebtoken', () => ({
   sign: (): Promise<string> => {
