@@ -2,6 +2,7 @@ import { noContent, ok, serverError } from '@/presentation/helpers/http/http-hel
 import { LoadSurveysController } from './load-surveys-controller'
 import { LoadSurveys, SurveyModel } from './load-surveys-controller-protocols'
 import MockDate from 'mockdate'
+import { throwError } from '@/domain/test'
 
 const makeFakeSurveys = (): SurveyModel[] => {
   return [{
@@ -77,7 +78,7 @@ describe('LoadSurveys Controller', () => {
 
   test('Should return 500 if loadSurveys throws', async () => {
     const { sut, loadSurveysStub } = makeSut()
-    jest.spyOn(loadSurveysStub, 'load').mockResolvedValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    jest.spyOn(loadSurveysStub, 'load').mockImplementationOnce(throwError)
     const httpResponse = await sut.handler({})
     expect(httpResponse).toEqual(serverError(new Error()))
   })
