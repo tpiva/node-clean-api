@@ -1,6 +1,7 @@
 import { Collection } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account-mongo-repository'
+import { mockAddAccountDataParams } from '@/domain/test'
 
 let accountCollection: Collection
 
@@ -21,11 +22,7 @@ describe('Account Mongo Repository', () => {
   describe('add()', () => {
     test('Should return an account on add success', async () => {
       const sut = new AccountMongoRepository()
-      const account = await sut.add({
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password'
-      })
+      const account = await sut.add(mockAddAccountDataParams())
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toEqual('any_name')
@@ -60,11 +57,7 @@ describe('Account Mongo Repository', () => {
   describe('updateAccessToken()', () => {
     test('Should update the accountToken on updateAccessToken success', async () => {
       const sut = new AccountMongoRepository()
-      const result = await accountCollection.insertOne({
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password'
-      })
+      const result = await accountCollection.insertOne(mockAddAccountDataParams())
       const fakeAccount = result.ops[0]
       expect(result.ops[0].accessToken).toBeFalsy()
       await sut.updateAccessToken(fakeAccount._id, 'any_token')
