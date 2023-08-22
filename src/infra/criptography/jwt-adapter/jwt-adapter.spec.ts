@@ -4,10 +4,10 @@ import jwt from 'jsonwebtoken'
 
 jest.mock('jsonwebtoken', () => ({
   sign: (): Promise<string> => {
-    return new Promise(resolve => resolve('any_token'))
+    return Promise.resolve('any_token')
   },
   verify: (toke: string): Promise<string> => {
-    return new Promise(resolve => resolve('any_value'))
+    return Promise.resolve('any_value')
   }
 }))
 
