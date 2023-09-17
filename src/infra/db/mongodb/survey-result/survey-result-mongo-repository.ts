@@ -2,8 +2,9 @@ import { SaveSurveyResultParams, SaveSurveyResultRepository, SurveyResultModel }
 import { ObjectId } from 'mongodb'
 import { QueryBuilder, MongoHelper } from '../helpers'
 import round from 'mongo-round'
+import { LoadSurveyResultRepository } from '@/data/protocols/db/survey-result/load-survey-result-repository'
 
-export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
+export class SurveyResultMongoRepository implements SaveSurveyResultRepository, LoadSurveyResultRepository {
   async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults')
     await surveyResultCollection.findOneAndUpdate({
@@ -17,11 +18,11 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
     }, {
       upsert: true
     })
-    const surveyResult = await this.loadBySurveyId(data.surveyId, data.accountId)
+    const surveyResult = await this.loadBySurveyId(data.surveyId)
     return surveyResult
   }
 
-  private async loadBySurveyId (surveyId: string, accountId: string): Promise<SurveyResultModel> {
+  async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults')
     const query = new QueryBuilder()
       .match({
@@ -59,12 +60,12 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
         },
         count: {
           $sum: 1
-        },
-        currentAccountAnswer: {
-          $push: {
-            $cond: [{ $eq: ['$data.accountId', new ObjectId(accountId)] }, '$data.answer', '$invalid']
-          }
         }
+        // currentAccountAnswer: {
+        //   $push: {
+        //     $cond: [{ $eq: ['$data.accountId', new ObjectId(accountId)] }, '$data.answer', '$invalid']
+        //   }
+        // }
       })
       .project({
         _id: 0,
