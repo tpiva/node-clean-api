@@ -1,17 +1,17 @@
 import { throwError } from '@/domain/test'
 import { AddSurveyController } from './add-survey-controller'
-import { AddSurvey } from './add-survey-controller-protocols'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
-import { HttpRequest, Validation } from '@/presentation/protocols'
+import { HttpRequest } from '@/presentation/protocols'
 import MockDate from 'mockdate'
-import { mockAddSurvey, mockValidation } from '@/presentation/test'
+import faker from 'faker'
+import { ValidationSpy, AddSurveySpy } from '@/presentation/test'
 
-const makeHttpRequest = (): HttpRequest => ({
+const mockRequest = (): HttpRequest => ({
   body: {
-    question: 'any_question',
+    question: faker.random.words(),
     answers: [{
-      image: 'any_image',
-      answer: 'any_answer'
+      image: faker.image.imageUrl(),
+      answer: faker.random.word()
     }],
     date: new Date()
   }
@@ -19,22 +19,22 @@ const makeHttpRequest = (): HttpRequest => ({
 
 type SutTypes = {
   sut: AddSurveyController
-  validationStub: Validation
-  addSurveyStub: AddSurvey
+  validationSpy: ValidationSpy
+  addSurveySpy: AddSurveySpy
 }
 
 const makeSut = (): SutTypes => {
-  const validationStub = mockValidation()
-  const addSurveyStub = mockAddSurvey()
-  const sut = new AddSurveyController(validationStub, addSurveyStub)
+  const validationSpy = new ValidationSpy()
+  const addSurveySpy = new AddSurveySpy()
+  const sut = new AddSurveyController(validationSpy, addSurveySpy)
   return {
     sut,
-    validationStub,
-    addSurveyStub
+    validationSpy,
+    addSurveySpy
   }
 }
 
-describe('Add Surver Controller', () => {
+describe('AddSurvey Controller', () => {
   beforeAll(() => {
     MockDate.set(new Date())
   })
@@ -43,39 +43,37 @@ describe('Add Surver Controller', () => {
     MockDate.reset()
   })
 
-  test('Should call validation with correct values', async () => {
-    const { sut, validationStub } = makeSut()
-    const validationSpy = jest.spyOn(validationStub, 'validate')
-    const httpRequest = makeHttpRequest()
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationSpy } = makeSut()
+    const httpRequest = mockRequest()
     await sut.handler(httpRequest)
-    expect(validationSpy).toHaveBeenCalledWith(httpRequest.body)
+    expect(validationSpy.input).toEqual(httpRequest.body)
   })
 
-  test('Should return 400 if validation fails', async () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error())
-    const httpResponse = await sut.handler(makeHttpRequest())
-    expect(httpResponse).toEqual(badRequest(new Error()))
+  test('Should return 400 if Validation fails', async () => {
+    const { sut, validationSpy } = makeSut()
+    validationSpy.error = new Error()
+    const httpResponse = await sut.handler(mockRequest())
+    expect(httpResponse).toEqual(badRequest(validationSpy.error))
   })
 
   test('Should call AddSurvey with correct values', async () => {
-    const { sut, addSurveyStub } = makeSut()
-    const addSpy = jest.spyOn(addSurveyStub, 'add')
-    const httpRequest = makeHttpRequest()
+    const { sut, addSurveySpy } = makeSut()
+    const httpRequest = mockRequest()
     await sut.handler(httpRequest)
-    expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
+    expect(addSurveySpy.addSurveyParams).toEqual(httpRequest.body)
   })
 
-  test('Should return 500 if addSurvey throws', async () => {
-    const { sut, addSurveyStub } = makeSut()
-    jest.spyOn(addSurveyStub, 'add').mockImplementationOnce(throwError)
-    const httpResponse = await sut.handler(makeHttpRequest())
+  test('Should return 500 if AddSurvey throws', async () => {
+    const { sut, addSurveySpy } = makeSut()
+    jest.spyOn(addSurveySpy, 'add').mockImplementationOnce(throwError)
+    const httpResponse = await sut.handler(mockRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
   test('Should return 204 on success', async () => {
     const { sut } = makeSut()
-    const httpResponse = await sut.handler(makeHttpRequest())
+    const httpResponse = await sut.handler(mockRequest())
     expect(httpResponse).toEqual(noContent())
   })
 })

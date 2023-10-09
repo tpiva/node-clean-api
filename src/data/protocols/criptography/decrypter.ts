@@ -1,3 +1,3 @@
 export interface Decrypter {
-  decrypt: (value: string) => Promise<null | string>
+  decrypt: (ciphertext: string) => Promise<null | string>
 }
