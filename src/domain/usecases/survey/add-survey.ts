@@ -1,8 +1,8 @@
-import { SurveyAnswer } from '@/domain/models/survey'
+import { SurveyAnswerModel } from '@/domain/models/survey'
 
 export type AddSurveyParams = {
   question: string
-  answers: SurveyAnswer[]
+  answers: SurveyAnswerModel[]
   date: Date
 }
 
