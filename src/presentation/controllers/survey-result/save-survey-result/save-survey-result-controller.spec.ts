@@ -9,12 +9,12 @@ import { LoadSurveyByIdSpy, SaveSurveyResultSpy } from '@/presentation/test'
 
 const mockRequest = (answer: string = null): HttpRequest => ({
   params: {
-    surveyId: faker.random.uuid()
+    surveyId: faker.datatype.uuid()
   },
   body: {
     answer
   },
-  accountId: faker.random.uuid()
+  accountId: faker.datatype.uuid()
 })
 
 type SutTypes = {

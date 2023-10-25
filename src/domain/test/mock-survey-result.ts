@@ -2,30 +2,30 @@ import { SaveSurveyResultParams, SurveyResultModel } from '@/data/usecases/surve
 import faker from 'faker'
 
 export const mockSaveSurveyResultParams = (): SaveSurveyResultParams => ({
-  accountId: faker.random.uuid(),
-  surveyId: faker.random.uuid(),
+  accountId: faker.datatype.uuid(),
+  surveyId: faker.datatype.uuid(),
   answer: faker.random.word(),
   date: faker.date.recent()
 })
 
 export const mockSurveyResultModel = (): SurveyResultModel => ({
-  surveyId: faker.random.uuid(),
+  surveyId: faker.datatype.uuid(),
   question: faker.random.words(),
   answers: [{
     answer: faker.random.word(),
-    count: faker.random.number({ min: 0, max: 1000 }),
-    percent: faker.random.number({ min: 0, max: 100 })
+    count: faker.datatype.number({ min: 0, max: 1000 }),
+    percent: faker.datatype.number({ min: 0, max: 100 })
   }, {
     answer: faker.random.word(),
     image: faker.image.imageUrl(),
-    count: faker.random.number({ min: 0, max: 1000 }),
-    percent: faker.random.number({ min: 0, max: 100 })
+    count: faker.datatype.number({ min: 0, max: 1000 }),
+    percent: faker.datatype.number({ min: 0, max: 100 })
   }],
   date: faker.date.recent()
 })
 
 export const mockEmptySurveyResultModel = (): SurveyResultModel => ({
-  surveyId: faker.random.uuid(),
+  surveyId: faker.datatype.uuid(),
   question: faker.random.words(),
   answers: [{
     answer: faker.random.word(),
