@@ -5,7 +5,7 @@ export class LoadSurveysController implements Controller {
   constructor (private readonly loadSurverys: LoadSurveys) {}
   async handler (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const surveys = await this.loadSurverys.load()
+      const surveys = await this.loadSurverys.load(httpRequest.accountId)
       return surveys.length ? ok(surveys) : noContent()
     } catch (error) {
       return serverError(error)
