@@ -18,10 +18,10 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
     }, {
       upsert: true
     })
-    await this.loadBySurveyId(data.surveyId)
+    await this.loadBySurveyId(data.surveyId, data.accountId)
   }
 
-  async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
+  async loadBySurveyId (surveyId: string, accountId: string): Promise<SurveyResultModel> {
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults')
     const query = new QueryBuilder()
       .match({
@@ -59,12 +59,12 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         },
         count: {
           $sum: 1
+        },
+        currentAccountAnswer: {
+          $push: {
+            $cond: [{ $eq: ['$data.accountId', new ObjectId(accountId)] }, '$data.answer', '$invalid']
+          }
         }
-        // currentAccountAnswer: {
-        //   $push: {
-        //     $cond: [{ $eq: ['$data.accountId', new ObjectId(accountId)] }, '$data.answer', '$invalid']
-        //   }
-        // }
       })
       .project({
         _id: 0,
