@@ -11,6 +11,8 @@
       "@typescript-eslint/return-await": "off",
       "@typescript-eslint/no-redeclare": "off",
       "@typescript-eslint/restrict-template-expressions": "off",
-      "@typescript-eslint/prefer-nullish-coalescing": "off"
+      "@typescript-eslint/prefer-nullish-coalescing": "off",
+      "@typescript-eslint/no-namespace": "off",
+      "import/export": "off"
     }
 }
