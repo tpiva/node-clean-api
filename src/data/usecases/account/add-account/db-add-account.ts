@@ -1,19 +1,19 @@
 import { AddAccountRepository } from '@/data/protocols/db/account/add-account-repository'
-import { AddAccount, Hasher, LoadAccountByEmailRepository } from './db-add-account-protocols'
+import { AddAccount, Hasher, CheckAccountByEmailRepository } from './db-add-account-protocols'
 
 export class DbAddAccount implements AddAccount {
   constructor (private readonly hasher: Hasher,
     private readonly addAccountRepositoryStub: AddAccountRepository,
-    private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository) {
+    private readonly checkAccountByEmailRepository: CheckAccountByEmailRepository) {
     this.hasher = hasher
     this.addAccountRepositoryStub = addAccountRepositoryStub
-    this.loadAccountByEmailRepository = loadAccountByEmailRepository
+    this.checkAccountByEmailRepository = checkAccountByEmailRepository
   }
 
   async add (accountData: AddAccount.Params): Promise<AddAccount.Result> {
-    const account = await this.loadAccountByEmailRepository.loadByEmail(accountData.email)
+    const exists = await this.checkAccountByEmailRepository.checkByEmail(accountData.email)
     let isValid = false
-    if (!account) {
+    if (!exists) {
       const hashedPassword = await this.hasher.hash(accountData.password)
       isValid = await this.addAccountRepositoryStub.add(Object.assign({}, accountData, { password: hashedPassword }))
     }
