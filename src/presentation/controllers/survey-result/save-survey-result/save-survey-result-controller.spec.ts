@@ -89,6 +89,6 @@ describe('SaveSurveyResult Controller', () => {
     const { sut, saveSurveyResultSpy, loadAnswersBySurveySpy: loadSurveyByIdSpy } = makeSut()
     const request = mockRequest(loadSurveyByIdSpy.result[0])
     const httpResponse = await sut.handler(request)
-    expect(httpResponse).toEqual(ok(saveSurveyResultSpy.surveyResultModel))
+    expect(httpResponse).toEqual(ok(saveSurveyResultSpy.result))
   })
 })
