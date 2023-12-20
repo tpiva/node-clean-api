@@ -1,5 +1,4 @@
 import { MongoHelper } from '../helpers/mongo-helper'
-import { SurveyModel } from '@/domain/models/survey'
 import { AddSurveyRepository } from '@/data/protocols/db/survey/add-survey-repository'
 import { LoadSurveysRepository } from '@/data/protocols/db/survey/load-surveys-repository'
 import { LoadSurveyByIdRepository } from '@/data/usecases/survey/load-answers-by-survey/db-load-answers-by-survey-protocols'
@@ -12,7 +11,7 @@ import { LoadAnswersBySurveyRepository } from '@/data/protocols/db/survey/load-a
 export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository, CheckSurveyByIdRepository, LoadAnswersBySurveyRepository {
   async loadById (id: string): Promise<LoadSurveyByIdRepository.Result> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
-    const survey: SurveyModel = await surveyCollection.findOne({ _id: new ObjectId(id) })
+    const survey = await surveyCollection.findOne({ _id: new ObjectId(id) })
     return survey && MongoHelper.map(survey)
   }
 
@@ -33,7 +32,7 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
 
   async checkById (id: string): Promise<CheckSurveyByIdRepository.Result> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
-    const survey: SurveyModel = await surveyCollection.findOne(
+    const survey = await surveyCollection.findOne(
       { _id: new ObjectId(id) }, {
         projection: {
           _id: 1
@@ -42,7 +41,7 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     return survey !== null
   }
 
-  async loadAll (accountId: string): Promise<SurveyModel[]> {
+  async loadAll (accountId: string): Promise<LoadSurveysRepository.Result[]> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
 
     const query = new QueryBuilder()
@@ -73,7 +72,7 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
       })
       .build()
 
-    const surveys: SurveyModel[] = await surveyCollection.aggregate(query).toArray()
+    const surveys = await surveyCollection.aggregate(query).toArray()
     return MongoHelper.mapCollection(surveys)
   }
 
