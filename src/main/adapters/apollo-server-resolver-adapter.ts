@@ -3,6 +3,7 @@ import { ApolloError, AuthenticationError, ForbiddenError, UserInputError } from
 
 export const adapterResolver = async (controller: Controller, args?: any): Promise<any> => {
   const request = { ...(args || {}) }
+  console.log({ request })
   const httpResponse = await controller.handler(request)
   switch (httpResponse.statusCode) {
     case 200:
