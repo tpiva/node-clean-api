@@ -1,25 +1,23 @@
 import { forbiddenRequest, ok, serverError } from '@/presentation/helpers/http/http-helper'
-import { Controller, HttpRequest, HttpResponse, LoadSurveyById, SaveSurveyResult } from './save-survey-result-controller-protocols'
+import { Controller, HttpResponse, LoadAnswersBySurvey, SaveSurveyResult } from './save-survey-result-controller-protocols'
 import { InvalidParamError } from '@/presentation/errors'
 
 export class SaveSurveyResultController implements Controller {
   constructor (
-    private readonly loadSurveyById: LoadSurveyById,
+    private readonly loadAnswersBySurvey: LoadAnswersBySurvey,
     private readonly saveSurveyResult: SaveSurveyResult) {}
 
-  async handler (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handler (request: SaveSurveyResultController.Request): Promise<HttpResponse> {
     try {
-      const { surveyId } = httpRequest.params
-      const { answer } = httpRequest.body
-      const { accountId } = httpRequest
-      const survey = await this.loadSurveyById.loadById(surveyId)
-      if (survey) {
-        const answers = survey.answers.map(answer => answer.answer)
-        if (!answers.includes(answer)) {
-          return forbiddenRequest(new InvalidParamError('answer'))
-        }
-      } else {
+      const { surveyId } = request
+      const { answer } = request
+      const { accountId } = request
+      const answers = await this.loadAnswersBySurvey.loadAnswers(surveyId)
+
+      if (answers.length === 0) {
         return forbiddenRequest(new InvalidParamError('surveyId'))
+      } else if (!answers.includes(answer)) {
+        return forbiddenRequest(new InvalidParamError('answer'))
       }
       const surveyResult = await this.saveSurveyResult.save({
         accountId,
@@ -31,5 +29,13 @@ export class SaveSurveyResultController implements Controller {
     } catch (error) {
       return serverError(error)
     }
+  }
+}
+
+export namespace SaveSurveyResultController {
+  export type Request = {
+    surveyId: string
+    answer: string
+    accountId: string
   }
 }
